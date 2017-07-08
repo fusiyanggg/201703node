@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+<div id="clock"></div>
+<script type="text/javascript">
+
+    //长轮询是在打开一条连接以后保持连接,等待服务器推送来数据再关闭连接 然后浏览器再发出新的请求；
+    //这能更好地管理请求数量，也能及时得到更新后的数据
+    function send() {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8080/clock', true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.querySelector('#clock').innerHTML = xhr.responseText;
+                send()
+                //长轮询性能与服务器响应时间成反比。反应延迟越高，则每次执行send的间隔就长，性能越高。
+                //反应延迟越低，则执行send的频率越高，网络负载加重
+            }
+        };
+        xhr.send();
+    }
+
+    send();
+
+
+</script>
+</body>
+</html>

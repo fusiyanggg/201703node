@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .user {
+            color: blue;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="text-center">欢迎来到珠峰聊天室</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group" id="messages" onclick="clickMessages(event)">
+
+                    </ul>
+                </div>
+                <div class="panel-footer">
+                    <form class="row" onsubmit="send(event)">
+                        <div class="col-md-11">
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="col-md-1">
+                            <input type="submit" class="btn btn-primary">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    //socket.io.js文件会在window对象上面挂载一个io的属性对象。
+    //socket代表与服务器的连接对象
+    let socket = io();
+    //监听连接成功之后的事件
+    socket.on('connect', function () {
+        console.log('连接服务器成功');
+        //这是一个自定义的事件类型
+        socket.emit('getAllMessages');
+    });
+    //先得到输入框DOM对象
+    let txtInput = document.querySelector('.form-control');
+    let messagesUl = document.querySelector('#messages');
+    function send(event) {
+        event.preventDefault();
+        //先获取到输入框的值
+        let txt = txtInput.value;
+        //发服务器发送消息
+        socket.send(txt);
+        txtInput.value = "";
+    }
+    //传入一个msgObj对象，返回一个li内部的字符串
+    function format(msgObj) {
+        return `<span class="user">${msgObj.username}</span>:${msgObj.content} <span class="pull-right">${new Date(msgObj.createAt).toLocaleString()}</span>`;
+    }
+    //因为此socket是经过socket.io包装过的，所以可以用
+    socket.on('message', function (msgObj) {
+        let li = document.createElement('li');
+        li.innerHTML = format(msgObj);
+        li.className = 'list-group-item';
+        messagesUl.appendChild(li);
+    });
+    //当点击messages的ul的时候执行一个函数
+    function clickMessages(event) {
+        //判断当前点击的是用户名的span
+        if (event.target.className == 'user') {
+            //先获取用户名，然后给txtInput赋值 @用户名空格
+            let username = event.target.innerText;
+            txtInput.value = `@${username} `;
+        }
+    }
+    //监听服务器发过来的获取到最近20条消息的事件
+    socket.on('allMessages', function (docs) {
+        messagesUl.innerHTML = docs.map(doc => (
+            `<li class="list-group-item">${format(doc)}</li>`
+        )).join('')
+    });
+
+
+    function join(roomName) {
+        //告诉服务器当前的客户端要加入到某个房间内了
+        socket.emit('join',roomName)
+    }
+</script>
+</body>
+</html>

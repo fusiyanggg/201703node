@@ -1,0 +1,6 @@
+如何停止服务器
+```
+use admin 切换用户
+db.help() //执行help方法
+db.shutdownServer() //关闭db服务
+```

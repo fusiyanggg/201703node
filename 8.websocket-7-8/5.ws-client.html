@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>客户端</title>
+</head>
+<body>
+<script type="text/javascript">
+    // webSocket 没有跨域问题
+    // webSocket 是html5本身自带的，可以直接用
+    let socket = new WebSocket('ws://localhost:8080');
+    socket.onopen = function () {
+        console.log('客户端连接成功');
+        socket.send('服务器你好');
+    };
+
+    //客户端监听服务器端的消息
+    socket.onmessage = function (event) {// DOM 0级事件，需要传入事件对象
+        console.log(event.data); //event.data才能拿到消息内容
+    }
+</script>
+</body>
+</html>

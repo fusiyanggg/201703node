@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="clock"></div>
+<script type="text/javascript">
+
+    //轮询思想，不断地发送请求，得到回复刷新状态，会造成不必要的网络请求。浪费资源
+
+    setInterval(function () {
+        let xhr = new XMLHttpRequest(); //创建ajax对象  (readyState = 0)
+        xhr.open('GET', 'http://localhost:8080/clock', true); //打开链接 (readyState = 1)
+        xhr.onreadystatechange = function () { //当状态发生变化的时候执行回调函数
+            /**
+             * 0 初始态
+             * 1 打开连接之后 打开态
+             * 2 发送之后
+             * 3 接收到第一个响应的时候
+             * 4 响应全部接收完毕
+             */
+            if (xhr.readyState == 4 && xhr.status == 200) { //当响应全部接收完毕，并且响应回来的状态码为200的时候
+                //xhr.responseText; 他的类型永远是字符串
+                //xhr.response;     他的类型取决于xhr.responseType
+                document.querySelector('#clock').innerHTML = xhr.responseText;
+            }
+        };
+        xhr.send();
+    }, 1000)
+</script>
+</body>
+</html>
