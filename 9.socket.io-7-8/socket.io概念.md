@@ -13,7 +13,7 @@ Socket.IO是一个WebSocket库，包括了客户端的js和服务器端的node.j
 $ npm install socket.io
 ```
 ### 3.2 启动服务
-创建 app.js 文件
+创建 `app.js` 文件
 ```javascript
 
 var express = require('express');
@@ -38,11 +38,11 @@ server.listen(80);
 ```
 ### 3.3 客户端引用
 
-服务端运行后会在根目录动态生成socket.io的客户端js文件。客户端可以通过固定路径/socket.io/socket.io.js添加引用；
+服务端运行后会在根目录动态生成socket.io的客户端js文件。客户端可以通过固定路径`/socket.io/socket.io.js`添加引用；
 
 客户端加载socket.io文件后会得到一个全局的对象io；
 
-connect函数可以接受一个url参数，url可以socket服务的http完整地址，也可以是相对路径，如果省略则表示默认连接当前路径 创建index.html文件
+`connect`函数可以接受一个`url`参数，url可以socket服务的http完整地址，也可以是相对路径，如果省略则表示默认连接当前路径 创建index.html文件
 ```xml
 <script src="/socket.io/socket.io.js"></script>
 ```
@@ -60,7 +60,7 @@ window.onload = function () {
 };
  ```
 ### 3.4 发送消息
-成功建立连接后，我们可以通过socket对象的send函数来互相发送消息、修改index.html
+成功建立连接后，我们可以通过`socket`对象的`send`函数来互相发送消息、修改index.html
 ```javascript
 var socket = io.connect('/');
 socket.on('connect', function () {
@@ -88,7 +88,7 @@ io.on('connection', function (socket) {
 
 ### 4.1 send方法
 
- [send] 函数只是 @(emit) 的封装
+ `send` 函数只是 `emit` 的封装
 ```
 function send(){
     var args = toArray(arguments);
@@ -98,38 +98,51 @@ function send(){
 }
 ```
 
-[emit] 函数有两个参数
+`emit`函数有两个参数
 
 - 第一个参数是自定义的事件名称,发送方发送什么类型的事件名称,接收方就可以通过对应的事件名称来监听接收
 - 第二个参数是要发送的数据
 ### 4.2 服务端事件
-事件名称	含义
-connection	客户端成功连接到服务器
-message	接收到客户端发送的消息
-disconnect	客户端断开连接
-error	监听错误
-4.3 客户端事件
-事件名称	含义
-connect	成功连接到服务器
-message	接收到服务器发送的消息
-disconnect	客户端断开连接
-error	监听错误
-5. 划分房间
-5.1 命名空间
-可以在服务器端进入不同的房间,在房间里的广播和通信都不会影响到房间以外的客户端
 
-socket.join('chat');//进入chat房间
-socket.leave('chat');//离开chat房间
-5.2 广播
+|事件名称|含义|
+|:-:|:-:|
+|connection|客户端成功连接到服务器|
+|message|接收到客户端发送的消息|
+|disconnect|客户端断开连接|
+|error|监听错误|
+
+### 4.3 客户端事件
+|事件名称|含义|
+|:-:|:-:|
+|connect|成功连接到服务器|
+|message|接收到服务器发送的消息|
+|disconnect|客户端断开连接|
+|error|监听错误|
+
+---
+
+# 5. 划分房间
+
+### 5.1 命名空间
+可以在服务器端进入不同的房间,在房间里的广播和通信都不会影响到房间以外的客户端
+```
+socket.join('chat');  //进入chat房间
+socket.leave('chat'); //离开chat房间
+```
+### 5.2 广播
 全局广播就是所有连接到服务器的客户端都会受到广播的信息
 
-io.emit('message','全局广播');
+    io.emit('message','全局广播');
+
 也可以只在某个房间内发送广播
 
-io.in('room').emit('message','房间内广播');
-5.3 聊天室
+    io.in('room').emit('message','房间内广播');
+
+### 5.3 聊天室
+
 app.js
 
+```
 var express = require('express');
 var path = require('path');
 var app = express();
@@ -159,8 +172,11 @@ io.on('connection', function (socket) {
 });
 
 server.listen(80);
+```
+
 index.html
 
+```
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -215,5 +231,6 @@ index.html
 </script>
 </html>
 
-
-# http://socket.io/
+```
+# 扩展阅读
+ [socket.io](http://socket.io/)
