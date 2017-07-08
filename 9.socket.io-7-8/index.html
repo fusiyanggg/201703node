@@ -91,8 +91,30 @@
 
     function join(roomName) {
         //告诉服务器当前的客户端要加入到某个房间内了
-        socket.emit('join',roomName)
+        socket.emit('join', roomName)
     }
+</script>
+<script>
+    var socket = io.connect('/');
+    socket.on('connect', function () {
+        //客户端连接成功后发送消息'welcome'
+        socket.send('welcome');
+    });
+    //客户端收到服务器发过来的消息后触发
+    socket.on('message', function (message) {
+        console.log(message);
+    });
+    修改app.js
+
+    var io = require('scoket.io');
+    io.on('connection', function (socket) {
+        //向客户端发送消息
+        socket.send('欢迎光临');
+        //接收到客户端发过来的消息时触发
+        socket.on('message', function (data) {
+            console.log(data);
+        });
+    });
 </script>
 </body>
 </html>
